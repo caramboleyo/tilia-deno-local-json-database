@@ -1,1 +1,1 @@
-export { Datastore as default } from "./src/mod.ts";
+export { default as Collection } from './src/collection.ts';
