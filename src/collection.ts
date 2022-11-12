@@ -37,108 +37,75 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 	}
 
 	/** Finds multiple matching documents. */
-	async find(
-		query: Partial<Doc>,
-		projection: Partial<Projection<keyof Doc>> = {},
-		cb?: (x: DbResults<Doc>) => void
-	) {
+	async find(query: Partial<Doc>, projection: Partial<Projection<keyof Doc>> = {}) {
 		const results = (await this.executor.add(_find, [
 			this.filename,
 			query,
 			projection,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Find first matching document. */
-	async findOne(
-		query: Partial<Doc>,
-		projection: Partial<Projection<keyof Doc>> = {},
-		cb?: (x: DbResults<Doc>) => void
-	) {
+	async findOne(query: Partial<Doc>, projection: Partial<Projection<keyof Doc>> = {}) {
 		const results = (await this.executor.add(_findOne, [
 			this.filename,
 			query,
 			projection,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Insert a document. */
-	async insert(data: Doc, cb?: (x: DbResults<Doc>) => void) {
+	async insert(data: Doc | Doc[]) {
 		const results = (await this.executor.add(_insert, [
 			this.filename,
 			data,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Update multiple matching documents */
-	async update(query: Partial<Doc>, operators: Mongobj<Doc>, cb?: (x: DbResults<Doc>) => void) {
+	async update(query: Partial<Doc>, operators: Mongobj<Doc>) {
 		const results = (await this.executor.add(_update, [
 			this.filename,
 			query,
 			operators,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Update first matching document */
-	async updateOne(
-		query: Partial<Doc>,
-		operators: Mongobj<Doc>,
-		cb?: (x: DbResults<Doc>) => void
-	) {
+	async updateOne(query: Partial<Doc>, operators: Mongobj<Doc>) {
 		const results = (await this.executor.add(_updateOne, [
 			this.filename,
 			query,
 			operators,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb == 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Remove multiple matching documents */
-	async remove(query: Partial<Doc>, cb?: (x: DbResults<Doc>) => void) {
+	async remove(query: Partial<Doc>) {
 		const results = (await this.executor.add(_remove, [
 			this.filename,
 			query,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 
 	/** Remove first matching document */
-	async removeOne(query: Partial<Doc>, cb?: (x: DbResults<Doc>) => void) {
+	async removeOne(query: Partial<Doc>) {
 		const results = (await this.executor.add(_removeOne, [
 			this.filename,
 			query,
 			this.bufSize,
 		] as const)) as DbResults<Doc>;
-		if (cb && typeof cb === 'function') {
-			cb(results);
-		}
 		return results;
 	}
 }
