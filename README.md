@@ -166,3 +166,17 @@ const removed = await collection.remove({ _id: 'id2' });
 ```
 
 > **Notice**: If you dont want to delete but just unset one property of a document you need to use update with the $unset operator. 🔗 [List of rules and operators](https://github.com/kofrasa/mingo/blob/master/README.md).
+
+## Test & Benchmark
+
+There are **very** basic tests and a benchmark to demonstrate how you _could_ do that.
+
+Run tests in console:
+```javascript
+$ deno test -A
+```
+
+Run benchmark from console:
+```javascript
+$ deno run -A ./tests/benchmarks/find.js
+```
