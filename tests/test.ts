@@ -1,20 +1,28 @@
 import Collection from '../src/collection.ts';
 
-let db: Collection<{ name: string }>;
+//let collection: Collection<{ [key: string]: any }>;
+let collection: Collection<{ name: string }>;
 
 Deno.test('Creating collection', () => {
 	return new Promise(res => {
-		db = new Collection({ filename: './test_collection.json.db', autoload: true });
-		db.on('load', () => res());
+		collection = new Collection({
+			filename: './test_collection.json.collection',
+			autoload: true,
+		});
+		collection.on('load', () => res());
 	});
 });
 
+Deno.test('Inserting One Document', async () => {
+	await collection.insert({ name: 'Matthiew' });
+});
+
 Deno.test('Inserting Multiple Documents', async () => {
-	await db.insert({ name: 'denyn' }, { name: 'denyn' });
+	await collection.insert([{ name: 'Olivia' }, { name: 'Peter' }]);
 });
 
 Deno.test('Updating multiple Documents', async () => {
-	await db.update(
+	await collection.update(
 		{
 			name: 'denyn',
 		},
@@ -27,27 +35,19 @@ Deno.test('Updating multiple Documents', async () => {
 });
 
 Deno.test('Finding multiple with await', async () => {
-	await db.find({ name: 'Denyn' });
-});
-
-Deno.test('Finding multiple with callback', () => {
-	return new Promise(res => {
-		db.find({ name: 'Denyn' }, {}, () => {
-			res();
-		});
-	});
+	await collection.find({ name: 'Denyn' });
 });
 
 Deno.test('Removing multiple documents', async () => {
-	await db.remove({ name: 'Denyn' });
+	await collection.remove({ name: 'Denyn' });
 });
 
 Deno.test('Inserting one Document', async () => {
-	await db.insert({ name: 'denyn' });
+	await collection.insert({ name: 'denyn' });
 });
 
 Deno.test('Updating one Document', async () => {
-	await db.updateOne(
+	await collection.updateOne(
 		{
 			name: 'denyn',
 		},
@@ -60,9 +60,9 @@ Deno.test('Updating one Document', async () => {
 });
 
 Deno.test('Finding one Document', async () => {
-	await db.findOne({ name: 'Denyn' });
+	await collection.findOne({ name: 'Denyn' });
 });
 
 Deno.test('Removing one Document', async () => {
-	await db.removeOne({ name: 'Denyn' });
+	await collection.removeOne({ name: 'Denyn' });
 });
