@@ -6,7 +6,7 @@ let collection: Collection<{ name: string }>;
 Deno.test('Creating collection', () => {
 	return new Promise(res => {
 		collection = new Collection({
-			filename: './test_collection.json.collection',
+			filename: './test_collection.json.db',
 			autoload: true,
 		});
 		collection.on('load', () => res());

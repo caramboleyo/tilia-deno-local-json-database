@@ -1,5 +1,5 @@
 import { timed } from 'https://cdn.skypack.dev/@thi.ng/bench';
-import { Collection } from '../../src/collection.ts';
+import Collection from '../../src/collection.ts';
 
 const db = new Collection({ filename: './test_collection.json.db', autoload: true });
 
@@ -8,11 +8,11 @@ timed(async () => {
 }, 'Insert');
 
 timed(async () => {
-	let docs = await db.find({ name: 'Denyn' });
+	await db.find({ name: 'Denyn' });
 }, 'Find');
 
 timed(async () => {
-	let docs = await db.findOne({ name: 'Denyn' });
+	await db.findOne({ name: 'Denyn' });
 }, 'Find One');
 
 timed(async () => {
