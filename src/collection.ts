@@ -1,44 +1,42 @@
 import type { DataObject, DbResults, Mongobj, Projection } from './types.ts';
-import {
-	_find,
-	_findOne,
-	_insert,
-	_remove,
-	_removeOne,
-	_update,
-	_updateOne,
-} from './methods/mod.ts';
+import insert from './methods/insert.ts';
+import find from './methods/find.ts';
+import findOne from './methods/findOne.ts';
+import update from './methods/update.ts';
+import updateOne from './methods/updateOne.ts';
+import remove from './methods/remove.ts';
+import removeOne from './methods/removeOne.ts';
 import { init } from './storage.ts';
-import type DataStoreOptions from './types/ds.options.ts';
+import type CollectionOptions from './types/collection.options.ts';
 import { EventEmitter, resolve } from '../deps.ts';
 import Executor from './executor.ts';
 
-/** Represents the Datastore instance. */
+/** Represents a Collection instance. */
 export default class Collection<Doc extends DataObject> extends EventEmitter {
 	public filename: string;
 	private bufSize?: number;
 	private executor = new Executor();
 
-	/** Builds the datastore with the given options. */
-	constructor({ filename, autoload, bufSize }: DataStoreOptions) {
+	/** Builds the collection with the given options. */
+	constructor({ filename, autoload, bufSize }: CollectionOptions) {
 		super();
 		this.filename = filename
 			? resolve(Deno.cwd(), filename)
 			: resolve(Deno.cwd(), './database.json');
 		this.bufSize = bufSize;
 		if (autoload) {
-			this.loadDatabase().then(() => this.emit('load'));
+			this.loadFromFile().then(() => this.emit('load'));
 		}
 	}
 
 	/** Loads the database on first load and ensures that path exists. */
-	loadDatabase() {
+	loadFromFile() {
 		return init(this.filename);
 	}
 
 	/** Finds multiple matching documents. */
 	async find(query: Partial<Doc>, projection: Partial<Projection<keyof Doc>> = {}) {
-		const results = (await this.executor.add(_find, [
+		const results = (await this.executor.add(find, [
 			this.filename,
 			query,
 			projection,
@@ -49,7 +47,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Find first matching document. */
 	async findOne(query: Partial<Doc>, projection: Partial<Projection<keyof Doc>> = {}) {
-		const results = (await this.executor.add(_findOne, [
+		const results = (await this.executor.add(findOne, [
 			this.filename,
 			query,
 			projection,
@@ -60,7 +58,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Insert a document. */
 	async insert(data: Doc | Doc[]) {
-		const results = (await this.executor.add(_insert, [
+		const results = (await this.executor.add(insert, [
 			this.filename,
 			data,
 		] as const)) as DbResults<Doc>;
@@ -69,7 +67,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Update multiple matching documents */
 	async update(query: Partial<Doc>, operators: Mongobj<Doc>) {
-		const results = (await this.executor.add(_update, [
+		const results = (await this.executor.add(update, [
 			this.filename,
 			query,
 			operators,
@@ -80,7 +78,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Update first matching document */
 	async updateOne(query: Partial<Doc>, operators: Mongobj<Doc>) {
-		const results = (await this.executor.add(_updateOne, [
+		const results = (await this.executor.add(updateOne, [
 			this.filename,
 			query,
 			operators,
@@ -91,7 +89,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Remove multiple matching documents */
 	async remove(query: Partial<Doc>) {
-		const results = (await this.executor.add(_remove, [
+		const results = (await this.executor.add(remove, [
 			this.filename,
 			query,
 			this.bufSize,
@@ -101,7 +99,7 @@ export default class Collection<Doc extends DataObject> extends EventEmitter {
 
 	/** Remove first matching document */
 	async removeOne(query: Partial<Doc>) {
-		const results = (await this.executor.add(_removeOne, [
+		const results = (await this.executor.add(removeOne, [
 			this.filename,
 			query,
 			this.bufSize,

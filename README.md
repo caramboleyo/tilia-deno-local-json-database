@@ -27,27 +27,17 @@ import Collection from 'https://deno.land/x/tilia/src/collection.ts';
 const collection = new Collection({ filename: './collection.json.db', autoload: true });
 ```
 
-When you instantiate a collection you can pass it a config object with a couple
-of options:
+When you instantiate a collection you can pass it a config object with a couple of options:
 
-`filename`: The filename is the absolute path to your target file. If no
-filename is provided, DnDB will automatically create one in the current
-working directory, and if a full path is not specified, it will resolve the
-file name within the CWD.
+`filename`: The filename is the absolute path to your target file. If no filename is provided, DnDB will automatically create one in the current working directory, and if a full path is not specified, it will resolve the file name within the CWD.
 
-`autoload`: The autoload option runs the `loadDatabase` method which creates
-the persistent file the first time DnDB is running in your project, this is
-optional, but if the loadDatabase method is not executed, the instance will
-not work until the persistent file exists.
+`autoload`: The autoload option runs the `loadFromFile` method which creates the persistent file the first time a collection is initialized, this is optional, but if the `loadFromFile` method is not executed, the instance will assume the file exists.
 
-`bufSize`: The bufSize parameter rewrites the default size of the buffer. It
-must be indicated in numbers and represents the amount of bytes to be
-allocated. By default 4096 bytes.
+`bufSize`: The bufSize parameter rewrites the default size of the buffer. It must be indicated in numbers and represents the amount of bytes to be allocated. By default 4096 bytes.
 
 ## Insert
 
-All data types are allowed, but field names starting with '$' are reserved for
-data querying.
+All data types are allowed, but field names starting with '$' are reserved for data querying.
 
 If the document does not already contain an `_id` field, it will be automatically generated. The `_id` of a document, once set, shouldn't be modified.
 
@@ -81,13 +71,9 @@ There are two methods to query the database:
 
 `findOne`: Finds the first document that matches the query and returns exact first matching object.
 
-You can select documents based on field equality or use comparison operators
-(`$lt`, `$lte`, `$gt`, `$gte`, `$in`, `$nin`, `$neq`). You can also use logical
-operators `$or`, `$and`, `$not` and `$eq`.
-🔗 [List of rules and operators](https://github.com/kofrasa/mingo/blob/master/README.md)
+You can select documents based on field equality or use comparison operators (`$lt`, `$lte`, `$gt`, `$gte`, `$in`, `$nin`, `$neq`). You can also use logical operators `$or`, `$and`, `$not` and `$eq`. 🔗 [List of rules and operators](https://github.com/kofrasa/mingo/blob/master/README.md)
 
-You can use regular expressions in two ways: in basic querying in place of a
-string, or with the $regex operator.
+You can use regular expressions in two ways: in basic querying in place of a string, or with the $regex operator.
 
 ```javascript
 const docs = await collection.find({ name: 'Denyn' });
@@ -119,11 +105,7 @@ let docs = await collection.find({ 'list.games.0': 'Doom' });
 
 ### Projection
 
-You can give `find` and `findOne` an optional second argument, projections. The
-syntax is the same as MongoDB: `{ a: 1, b: 1 }` to return only the a and b
-fields, `{ a: 0, b: 0 }` to omit these two fields. You cannot use both modes at
-the time, except for \_id which is by default always returned and which you can
-choose to omit. You can project on nested documents. 🔗 [List of rules and operators](https://github.com/kofrasa/mingo/blob/master/README.md)
+You can give `find` and `findOne` an optional second argument, projections. The syntax is the same as MongoDB: `{ a: 1, b: 1 }` to return only the a and b fields, `{ a: 0, b: 0 }` to omit these two fields. You cannot use both modes at the time, except for \_id which is by default always returned and which you can choose to omit. You can project on nested documents. 🔗 [List of rules and operators](https://github.com/kofrasa/mingo/blob/master/README.md)
 
 ```javascript
 const docs = await collection.find({ planet: 'Mars' }, { planet: 1, system: 1 });
